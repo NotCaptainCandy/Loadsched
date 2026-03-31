@@ -1,0 +1,28 @@
+const std = @import("std");
+const transformer = @import("transformer.zig");
+
+// Cable Structure
+
+const Cable = struct {
+    name: []const u8,
+    area_mm2: f64,
+    r_ohm_per_km: f64,
+    x_ohm_per_km: f64,
+    ampacity_a: f64,
+};
+
+// Cable Table (3 Phase, copper conductor, XLPE insulation, 600V rated)
+// Resistance and reactance at 90* C conductor temperature / km (from Nexans Canada XLPE cable datasheets)
+// Ampacity values for cables in conduit at 30* C ambient, derated per CSA C22.1 Table 2
+
+const cables = [_]Cable{
+    .{ .name = "3C 35mm² Cu XLPE", .area_mm2 = 35, .r_ohm_per_km = 0.668, .x_ohm_per_km = 0.100, .ampacity_a = 130.0 },
+    .{ .name = "3C 50mm² Cu XLPE", .area_mm2 = 50, .r_ohm_per_km = 0.463, .x_ohm_per_km = 0.095, .ampacity_a = 160.0 },
+    .{ .name = "3C 70mm² Cu XLPE", .area_mm2 = 70, .r_ohm_per_km = 0.321, .x_ohm_per_km = 0.090, .ampacity_a = 200.0 },
+    .{ .name = "3C 95mm² Cu XLPE", .area_mm2 = 95, .r_ohm_per_km = 0.248, .x_ohm_per_km = 0.087, .ampacity_a = 240.0 },
+    .{ .name = "3C 120mm² Cu XLPE", .area_mm2 = 120, .r_ohm_per_km = 0.196, .x_ohm_per_km = 0.085, .ampacity_a = 275.0 },
+    .{ .name = "3C 150mm² Cu XLPE", .area_mm2 = 150, .r_ohm_per_km = 0.159, .x_ohm_per_km = 0.083, .ampacity_a = 310.0 },
+    .{ .name = "3C 185mm² Cu XLPE", .area_mm2 = 185, .r_ohm_per_km = 0.127, .x_ohm_per_km = 0.082, .ampacity_a = 355.0 },
+    .{ .name = "3C 240mm² Cu XLPE", .area_mm2 = 240, .r_ohm_per_km = 0.098, .x_ohm_per_km = 0.080, .ampacity_a = 415.0 },
+    .{ .name = "3C 300mm² Cu XLPE", .area_mm2 = 300, .r_ohm_per_km = 0.078, .x_ohm_per_km = 0.079, .ampacity_a = 470.0 },
+};
