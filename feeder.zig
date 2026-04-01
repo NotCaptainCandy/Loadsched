@@ -12,6 +12,7 @@ const Cable = struct {
 };
 
 // Cable Table (3 Phase, copper conductor, XLPE insulation, 600V rated)
+// !! Add more cables here to have more options to select from
 // Resistance and reactance at 90* C conductor temperature / km (from Nexans Canada XLPE cable datasheets)
 // Ampacity values for cables in conduit at 30* C ambient, derated per CSA C22.1 Table 2
 
@@ -50,4 +51,57 @@ fn voltageDrop(cable: Cable, current_a: f64, length_m: f64, pf: f64, voltage_ll:
     const vd = (std.math.sqrt(3.0) * current_a * length_km * (cable.r_ohm_per_km * pf + cable.x_ohm_per_km * sin_phi)) / voltage_ll * 100.0;
 
     return vd;
+}
+
+// Feeder Sizing Function
+// Selects on the conditions:
+// 1. ampacity >= full_load_current (thermal limit)
+// 2. voltage drop % <= 3.0 (power quality limit)
+
+pub fn sizeFeeder(sel: transformer.TransformerSelection, voltage_ll: f64, length_m: f64, pf: f64) !FeederResult {
+    const i_fl = transformer.fullLoadCurrent(sel.selected_kva, voltage_ll);
+
+    for (cables) |cable| {
+        const ampacity_ok = cable.ampacity_a >= i_fl;
+        const vd_pct = voltageDrop(cable, i_fl, length_m, pf, voltage_ll);
+        const vd_ok = vd_pct <= VD_LIMIT_PCT;
+
+        if (ampacity_ok and vd_ok) {
+            return FeederResult{
+                .full_load_current_a = i_fl,
+                .ampacity_ok = true,
+                .cable = cable,
+                .length_m = length_m,
+                .vd_ok = true,
+                .vd_pct = vd_pct,
+            };
+        }
+    }
+
+    return error.NoSuitableCableFound;
+}
+
+// Helper function for report.zig
+
+pub const CableCandidate = struct {
+    cable: Cable,
+    vd_pct: f64,
+    ampacity_ok: bool,
+    vd_ok: bool,
+};
+
+pub fn allCableCandidates(i_fl: f64, length_m: f64, pf: f64, voltage_ll: f64, allocator: std.mem.Allocator) ![]CableCandidate {
+    var candidates = try allocator.alloc(CableCandidate, cables.len);
+
+    for (cables, 0..) |cable, i| {
+        const vd_pct = voltageDrop(cable, i_fl, length_m, pf, voltage_ll);
+        candidates[i] = CableCandidate{
+            .cable = cable,
+            .vd_pct = vd_pct,
+            .ampacity_ok = cable.ampacity_a >= i_fl,
+            .vd_ok = vd_pct <= VD_LIMIT_PCT,
+        };
+    }
+
+    return candidates;
 }
