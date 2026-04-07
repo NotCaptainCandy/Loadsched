@@ -16,7 +16,7 @@ pub fn build(b: *std.Build) void {
         const resolved = b.resolveTargetQuery(query);
 
         const exe = b.addExecutable(.{
-            .name = "plant_sizer",
+            .name = "loadsched",
             .root_module = b.createModule(.{
                 .root_source_file = b.path("src/main.zig"),
                 .target = resolved,

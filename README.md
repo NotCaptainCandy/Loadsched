@@ -1,4 +1,4 @@
-# plant_sizer
+# Loadsched
 
 A command-line tool written in Zig that automates early-stage electrical distribution sizing for small industrial facilities. Given a JSON load list and a few parameters, it produces a structured sizing report covering transformer selection, main feeder cable sizing, and a motor starting screen — the same front-end steps an electrical consulting engineer performs before running a full power system study in ETAP or SKM.
 
@@ -6,7 +6,7 @@ A command-line tool written in Zig that automates early-stage electrical distrib
 
 ## What It Does
 
-Starting from a list of facility loads, `plant_sizer` walks through the following engineering workflow automatically:
+Starting from a list of facility loads, `loadsched` walks through the following engineering workflow automatically:
 
 1. **Load aggregation** — applies demand/diversity factors per load type and duty cycle to compute total demand kW and kVA
 2. **Transformer sizing** — selects the next standard three-phase transformer rating above the demand (including a user-specified growth margin)
@@ -22,12 +22,12 @@ Download the binary for your platform from the [Releases](../../releases) page.
 
 | Platform | File |
 |---|---|
-| Windows x86_64 | `plant_sizer-x86_64-windows.exe` |
-| Windows ARM64 | `plant_sizer-aarch64-windows.exe` |
-| Linux x86_64 | `plant_sizer-x86_64-linux` |
-| Linux ARM64 | `plant_sizer-aarch64-linux` |
-| macOS Intel | `plant_sizer-x86_64-macos` |
-| macOS Apple Silicon | `plant_sizer-aarch64-macos` |
+| Windows x86_64 | `loadsched-x86_64-windows.exe` |
+| Windows ARM64 | `loadsched-aarch64-windows.exe` |
+| Linux x86_64 | `loadsched-x86_64-linux` |
+| Linux ARM64 | `loadsched-aarch64-linux` |
+| macOS Intel | `loadsched-x86_64-macos` |
+| macOS Apple Silicon | `loadsched-aarch64-macos` |
 
 ***
 
@@ -35,11 +35,11 @@ Download the binary for your platform from the [Releases](../../releases) page.
 
 ### Windows:
 ```
-plant_sizer.exe <loads.json> --length <m> [options]
+loadsched.exe <loads.json> --length <m> [options]
 ```
 ### MacOS/Linux:
 ```
-./plant_sizer <loads.json> --length <m> [options]
+./loadsched <loads.json> --length <m> [options]
 ```
 
 ### Required arguments
@@ -119,7 +119,7 @@ Three example load lists are included in the `examples/` directory to exercise a
 A mixed motor/lighting/HVAC facility. Produces a clean all-PASS report — good baseline.
 
 ```bash
-plant_sizer examples/food_processing_plant.json --length 80 --voltage 600 --pf 0.92 --growth 0.20 --out reports/food_plant.txt
+loadsched examples/food_processing_plant.json --length 80 --voltage 600 --pf 0.92 --growth 0.20 --out reports/food_plant.txt
 ```
 
 Expected: 300 kVA transformer, 150mm² feeder cable, motor starting OK.
@@ -130,7 +130,7 @@ Expected: 300 kVA transformer, 150mm² feeder cable, motor starting OK.
 A heavy motor-dominated facility with a long feeder. Exercises the motor starting FLAG and voltage drop stress path.
 
 ```bash
-plant_sizer examples/compressor_station.json --length 150 --voltage 600 --pf 0.87 --growth 0.25 --out reports/compressor.txt
+loadsched examples/compressor_station.json --length 150 --voltage 600 --pf 0.87 --growth 0.25 --out reports/compressor.txt
 ```
 
 Expected: 500 kVA transformer, motor/xfmr ratio FLAG with VFD recommendation, cable comparison table under stress.
@@ -141,7 +141,7 @@ Expected: 500 kVA transformer, motor/xfmr ratio FLAG with VFD recommendation, ca
 Lighting and HVAC only — no motors. Exercises the motor screen N/A path.
 
 ```bash
-plant_sizer examples/small_warehouse.json --length 40 --voltage 600 --pf 0.92 --growth 0.30 --out reports/warehouse.txt
+loadsched examples/small_warehouse.json --length 40 --voltage 600 --pf 0.92 --growth 0.30 --out reports/warehouse.txt
 ```
 
 Expected: 45 kVA transformer, motor screen prints "No motors in load list."
@@ -150,7 +150,7 @@ Expected: 45 kVA transformer, motor screen prints "No motors in load list."
 
 ## Engineering Scope and Limitations
 
-`plant_sizer` is a **preliminary sizing tool** — it automates the front-end calculations that precede a full power system study. It is not a substitute for detailed engineering analysis.
+`loadsched` is a **preliminary sizing tool** — it automates the front-end calculations that precede a full power system study. It is not a substitute for detailed engineering analysis.
 
 | In scope | Out of scope |
 |---|---|
@@ -190,7 +190,7 @@ where the transformer impedance $$ Z_T $$ defaults to 5.75% per IEEE C57.12, and
 ## Project Structure
 
 ```
-electrical-sizing-tool/
+loadsched/
 ├── src/
 │   ├── main.zig          # CLI parsing and orchestration
 │   ├── load.zig          # Load structs, demand factors, aggregation
@@ -215,7 +215,7 @@ electrical-sizing-tool/
 Requires Zig `0.16.0-dev.2565+684032671` or a compatible nightly build, available from [ziglang.org/download](https://ziglang.org/download/).
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/NotCaptainCandy/Loadsched.git
 cd electrical-sizing-tool
 zig build -Doptimize=ReleaseSafe
 ```
