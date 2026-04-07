@@ -1,0 +1,77 @@
+============================================================
+  INDUSTRIAL PLANT ELECTRICAL SIZING REPORT
+============================================================
+  Facility      : Northern Gas Compressor Station
+  Supply voltage: 600 V (L-L)
+  Target PF     : 0.87
+  Growth margin : 25%
+  Feeder length : 150 m
+
+
+1. LOAD SUMMARY
+------------------------------------------------------------
+  Load Name                          kW     PF  Dem.Fct    Dem. kW   Dem. kVA
+  --------------------------------------------------------------------------
+  Main Compressor Motor           200.0   0.85     1.00      200.0      235.3
+  Standby Compressor Motor        150.0   0.85     0.40       60.0       70.6
+  Cooling Fan Motor                30.0   0.88     1.00       30.0       34.1
+  Lube Oil Pump                    11.0   0.87     1.00       11.0       12.6
+  Control Room HVAC                15.0   0.90     0.50        7.5        8.3
+  Lighting + Outlets               10.0   0.95     0.90        9.0        9.5
+  --------------------------------------------------------------------------
+  TOTAL                           416.0                      317.5      370.4
+
+  Connected load : 416.0 kW
+  Demand load    : 317.5 kW
+  Demand kVA     : 370.4 kVA
+  Effective PF   : 0.857
+
+2. TRANSFORMER SIZING
+------------------------------------------------------------
+  Demand kVA               : 370.4 kVA
+  Growth margin (25%)      : +92.6 kVA
+  Required kVA             : 463.0 kVA
+  Selected standard rating : 500 kVA
+  Utilization at demand    : 74.1%
+
+3. MAIN FEEDER SIZING
+------------------------------------------------------------
+  Full load current : 481.1 A
+  Feeder length     : 150 m
+  Selected cable    : 3C 300mm² Cu XLPE
+  Ampacity          : 470 A  [FAIL]
+  Voltage drop      : 2.23%  [PASS]  (limit: 3.0%)
+
+  [!] WARNING: No single cable satisfies both ampacity and voltage drop
+      constraints. Cable shown is the largest available. Engineering
+      review required — consider parallel feeders or transformer relocation.
+
+  Cable comparison:
+  Cable                    Ampacity A       VD %     Amp.       VD
+  ----------------------------------------------------------------
+  3C 35mm² Cu XLPE               130      13.13     FAIL     FAIL
+  3C 50mm² Cu XLPE               160       9.37     FAIL     FAIL
+  3C 70mm² Cu XLPE               200       6.74     FAIL     FAIL
+  3C 95mm² Cu XLPE               240       5.39     FAIL     FAIL
+  3C 120mm² Cu XLPE              275       4.43     FAIL     FAIL
+  3C 150mm² Cu XLPE              310       3.73     FAIL     FAIL
+  3C 185mm² Cu XLPE              355       3.14     FAIL     FAIL
+  3C 240mm² Cu XLPE              415       2.60     FAIL     PASS
+  3C 300mm² Cu XLPE              470       2.23     FAIL     PASS <--
+
+4. MOTOR STARTING SCREEN
+------------------------------------------------------------
+  Largest motor     : Main Compressor Motor
+  Motor kW / kVA    : 200.0 kW  /  235.3 kVA
+  Transformer kVA   : 500 kVA
+  Motor/Xfmr ratio  : 0.471  (threshold: 0.30)
+  Est. starting dip : 16.2%  (threshold: 10.0%)
+  Ratio check       : [FLAG]
+  VD estimate check : [FLAG]
+
+  [!] Motor starting warrants further review.
+      Recommendation: Review soft starter option with engineer.
+      A dynamic motor starting study (ETAP/SKM) is advised
+      before finalising the distribution design.
+============================================================
+Report complete.

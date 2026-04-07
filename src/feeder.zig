@@ -37,6 +37,7 @@ pub const FeederResult = struct {
     vd_pct: f64, // calculated voltage drop %
     vd_ok: bool, // true if vd_pct <= VD_LIMIT_PCT
     ampacity_ok: bool, // true if cable ampacity >= full_load_current
+    constraints_met: bool, // false if no suitable cable found
 };
 
 // Voltage Drop Limit Percentage (Based on CSA C22.1)
@@ -58,13 +59,20 @@ fn voltageDrop(cable: Cable, current_a: f64, length_m: f64, pf: f64, voltage_ll:
 // 1. ampacity >= full_load_current (thermal limit)
 // 2. voltage drop % <= 3.0 (power quality limit)
 
-pub fn sizeFeeder(sel: transformer.TransformerSelection, voltage_ll: f64, length_m: f64, pf: f64) !FeederResult {
+pub fn sizeFeeder(sel: transformer.TransformerSelection, voltage_ll: f64, length_m: f64, pf: f64) FeederResult {
     const i_fl = transformer.fullLoadCurrent(sel.selected_kva, voltage_ll);
+    var best: ?CableCandidate = null;
 
     for (cables) |cable| {
         const ampacity_ok = cable.ampacity_a >= i_fl;
         const vd_pct = voltageDrop(cable, i_fl, length_m, pf, voltage_ll);
         const vd_ok = vd_pct <= VD_LIMIT_PCT;
+        const candidate = CableCandidate{
+            .cable = cable,
+            .vd_pct = vd_pct,
+            .ampacity_ok = ampacity_ok,
+            .vd_ok = vd_ok,
+        };
 
         if (ampacity_ok and vd_ok) {
             return FeederResult{
@@ -74,11 +82,25 @@ pub fn sizeFeeder(sel: transformer.TransformerSelection, voltage_ll: f64, length
                 .length_m = length_m,
                 .vd_ok = true,
                 .vd_pct = vd_pct,
+                .constraints_met = true,
             };
+        }
+
+        if (best == null or cable.ampacity_a > best.?.cable.ampacity_a) {
+            best = candidate;
         }
     }
 
-    return error.NoSuitableCableFound;
+    const fallback = best.?;
+    return FeederResult{
+        .full_load_current_a = i_fl,
+        .length_m = length_m,
+        .cable = fallback.cable,
+        .ampacity_ok = fallback.ampacity_ok,
+        .vd_pct = fallback.vd_pct,
+        .vd_ok = fallback.vd_ok,
+        .constraints_met = false,
+    };
 }
 
 // Helper function for report.zig

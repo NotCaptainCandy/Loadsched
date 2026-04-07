@@ -60,10 +60,10 @@
 4. MOTOR STARTING SCREEN
 ------------------------------------------------------------
   Largest motor     : Process Motor 1
-  Motor kW / kVA    : 75.0 kW  /  0.3 kVA
+  Motor kW / kVA    : 75.0 kW  /  85.2 kVA
   Transformer kVA   : 300 kVA
-  Motor/Xfmr ratio  : 0.001  (threshold: 0.30)
-  Est. starting dip : 0.0%  (threshold: 10.0%)
+  Motor/Xfmr ratio  : 0.284  (threshold: 0.30)
+  Est. starting dip : 9.8%  (threshold: 10.0%)
   Ratio check       : [OK]
   VD estimate check : [OK]
 

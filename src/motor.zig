@@ -92,7 +92,7 @@ pub fn screenMotorStarting(loads: []const load.Load, sel: transformer.Transforme
         };
     }
 
-    const largest_kva = largest_kw / sel.selected_kva;
+    const largest_kva = largest_kw / largest_pf;
 
     const motor_ratio = largest_kva / sel.selected_kva;
     const est_vd_pct = estimateStartingVoltageDip(largest_kva, sel.selected_kva);

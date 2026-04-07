@@ -121,6 +121,13 @@ fn buildFeederSizing(w: W, r: ReportInput) !void {
     try w.print("  Selected cable    : {s}\n", .{r.feed.cable.name});
     try w.print("  Ampacity          : {d:.0} A  [{s}]\n", .{ r.feed.cable.ampacity_a, if (r.feed.ampacity_ok) "PASS" else "FAIL" });
     try w.print("  Voltage drop      : {d:.2}%  [{s}]  (limit: 3.0%)\n", .{ r.feed.vd_pct, if (r.feed.vd_ok) "PASS" else "FAIL" });
+    if (!r.feed.constraints_met) {
+        try w.writeAll(
+            "\n  [!] WARNING: No single cable satisfies both ampacity and voltage drop\n" ++
+                "      constraints. Cable shown is the largest available. Engineering\n" ++
+                "      review required — consider parallel feeders or transformer relocation.\n",
+        );
+    }
 
     try w.writeAll("\n  Cable comparison:\n");
     try w.print("  {s:<24} {s:>10} {s:>10} {s:>8} {s:>8}\n", .{ "Cable", "Ampacity A", "VD %", "Amp.", "VD" });

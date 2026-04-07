@@ -116,17 +116,16 @@ pub fn main(init: std.process.Init) !void {
         cli.voltage_ll,
         cli.length_m,
         cli.target_pf,
-    ) catch |err| switch (err) {
-        error.NoSuitableCableFound => {
-            std.debug.print(
-                "Error: no cable in the table satisfies both ampacity and " ++
-                    "voltage drop constraints for a {d:.0} m feeder at {d:.0} kVA.\n" ++
-                    "Consider parallel feeders or relocating the transformer.\n",
-                .{ cli.length_m, selection.selected_kva },
-            );
-            return err;
-        },
-    };
+    );
+
+    if (!feed.constraints_met) {
+        std.debug.print(
+            "Warning: no single cable satisfies both ampacity and VD constraints " ++
+                "for a {d:.0} m feeder at {d:.0} kVA. " ++
+                "Report shows best available — consider parallel feeders.\n",
+            .{ cli.length_m, selection.selected_kva },
+        );
+    }
 
     const candidates = try feeder.allCableCandidates(
         feed.full_load_current_a,
