@@ -30,7 +30,7 @@ pub fn main(init: std.process.Init) !void {
 
     // Parsing the CLI Arguments
 
-    var args = init.minimal.args.iterate();
+    var args = try std.process.Args.Iterator.initAllocator(init.minimal.args, gpa);
     defer args.deinit();
     _ = args.next(); // skip executable name
 
