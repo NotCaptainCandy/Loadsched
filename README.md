@@ -35,7 +35,7 @@ Download the binary for your platform from the [Releases](../../releases) page.
 
 ### Windows:
 ```
-loadsched.exe <loads.json> --length <m> [options]
+./loadsched.exe <loads.json> --length <m> [options]
 ```
 ### MacOS/Linux:
 ```
@@ -119,7 +119,7 @@ Three example load lists are included in the `examples/` directory to exercise a
 A mixed motor/lighting/HVAC facility. Produces a clean all-PASS report — good baseline.
 
 ```bash
-loadsched examples/food_processing_plant.json --length 80 --voltage 600 --pf 0.92 --growth 0.20 --out reports/food_plant.txt
+./loadsched examples/food_processing_plant.json --length 80 --voltage 600 --pf 0.92 --growth 0.20 --out reports/food_plant.txt
 ```
 
 Expected: 300 kVA transformer, 150mm² feeder cable, motor starting OK.
@@ -130,7 +130,7 @@ Expected: 300 kVA transformer, 150mm² feeder cable, motor starting OK.
 A heavy motor-dominated facility with a long feeder. Exercises the motor starting FLAG and voltage drop stress path.
 
 ```bash
-loadsched examples/compressor_station.json --length 150 --voltage 600 --pf 0.87 --growth 0.25 --out reports/compressor.txt
+./loadsched examples/compressor_station.json --length 150 --voltage 600 --pf 0.87 --growth 0.25 --out reports/compressor.txt
 ```
 
 Expected: 500 kVA transformer, motor/xfmr ratio FLAG with VFD recommendation, cable comparison table under stress.
@@ -141,7 +141,7 @@ Expected: 500 kVA transformer, motor/xfmr ratio FLAG with VFD recommendation, ca
 Lighting and HVAC only — no motors. Exercises the motor screen N/A path.
 
 ```bash
-loadsched examples/small_warehouse.json --length 40 --voltage 600 --pf 0.92 --growth 0.30 --out reports/warehouse.txt
+./loadsched examples/small_warehouse.json --length 40 --voltage 600 --pf 0.92 --growth 0.30 --out reports/warehouse.txt
 ```
 
 Expected: 45 kVA transformer, motor screen prints "No motors in load list."
